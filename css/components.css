@@ -83,14 +83,35 @@
 
 /* ── Chart figures ────────────────────────────────────────── */
 .chart-figure {
-  margin: 2rem 0;
+  margin: 0;
   background: var(--color-background-secondary);
   border: 0.5px solid var(--color-border-tertiary);
   border-radius: var(--border-radius-lg);
-  padding: 1.25rem 1.25rem 0.75rem;
+  padding: 0.9rem 1rem 0.6rem;
+  display: flex;
+  flex-direction: column;
 }
-.chart-figure canvas { max-height: 320px; }
-.chart-figure figcaption { font-size: 12px; color: var(--color-text-tertiary); text-align: center; margin-top: 0.5rem; padding-bottom: 0.25rem; }
+.chart-figure canvas { max-height: 220px; width: 100% !important; }
+.chart-figure figcaption {
+  font-size: 11px; color: var(--color-text-tertiary);
+  text-align: center; margin-top: 0.5rem;
+  padding: 0.4rem 0 0.1rem;
+  border-top: 0.5px solid var(--color-border-tertiary);
+  line-height: 1.5;
+}
+.chart-figure figcaption a { color: var(--color-text-info); text-decoration: none; }
+.chart-figure figcaption a:hover { text-decoration: underline; }
+
+/* 2-column chart grid used in section 6 */
+.chart-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+@media (max-width: 560px) {
+  .chart-grid-2 { grid-template-columns: 1fr; }
+}
 
 /* ── USF spotlight box ────────────────────────────────────── */
 .usf-box {
