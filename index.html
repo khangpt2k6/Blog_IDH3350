@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consumer Behavior &amp; Environmental Sustainability — USF Student Research Blog</title>
+  <meta name="description" content="A student research blog post examining how consumer behavior impacts environmental sustainability, with a focus on USF and Tampa Bay.">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <!-- Chart.js (deferred — only needed for Section 6) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ── Sidebar ─────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar" role="navigation" aria-label="Table of contents">
+    <div class="sidebar-logo-group">
+      <img src="images/usf_logo.png" alt="University of South Florida" class="sidebar-logo">
+      <img src="images/honors_logo.png" alt="USF Honors College" class="sidebar-logo">
+    </div>
+    <p class="sidebar-brand">USF Research Blog</p>
+
+    <nav class="toc">
+      <p class="toc-title">Contents</p>
+      <ul class="toc-list" id="toc-list">
+        <li><a class="toc-link" href="#section-1"><span class="toc-num">1.</span>Introduction</a></li>
+        <li><a class="toc-link" href="#section-2"><span class="toc-num">2.</span>Background</a></li>
+        <li><a class="toc-link" href="#section-3"><span class="toc-num">3.</span>Consumer Damage</a></li>
+        <li><a class="toc-link" href="#section-4"><span class="toc-num">4.</span>Psychology of Choices</a></li>
+        <li><a class="toc-link" href="#section-5"><span class="toc-num">5.</span>Demographics &amp; Social Influence</a></li>
+        <li><a class="toc-link" href="#section-6"><span class="toc-num">6.</span>Data &amp; Statistics</a></li>
+        <li><a class="toc-link" href="#section-7"><span class="toc-num">7.</span>Paths Forward</a></li>
+        <li><a class="toc-link" href="#section-8"><span class="toc-num">8.</span>USF Perspective</a></li>
+        <li><a class="toc-link" href="#section-9"><span class="toc-num">9.</span>Conclusion</a></li>
+        <li><a class="toc-link" href="#section-10"><span class="toc-num">10.</span>References</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ── Top bar ──────────────────────────────────────────── -->
+  <header class="top-bar" role="banner">
+    <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="6"  x2="19" y2="6"/>
+        <line x1="3" y1="11" x2="19" y2="11"/>
+        <line x1="3" y1="16" x2="19" y2="16"/>
+      </svg>
+    </button>
+    <div class="topbar-logos">
+      <img src="images/usf_logo.png" alt="University of South Florida" class="topbar-logo">
+      <img src="images/honors_logo.png" alt="USF Honors College" class="topbar-logo topbar-logo--honors">
+    </div>
+    <span class="journal-name-bar">USF Student Research Blog &nbsp;|&nbsp; Environmental Studies</span>
+    <span class="topbar-date">April 2026</span>
+  </header>
+
+  <!-- ── Main content ─────────────────────────────────────── -->
+  <main class="main-content" id="main-content">
+    <div class="content-inner">
+
+      <!-- Cover: always visible -->
+      <div class="cover-block">
+        <div class="title-block">
+          <h1 class="main-title">Consumer Behavior Impacts on Environmental Sustainability</h1>
+          <p class="author-line">Submitted by a Student Researcher, College of Arts and Sciences</p>
+          <p class="affil">University of South Florida &nbsp;|&nbsp; Tampa, FL &nbsp;|&nbsp; Dept. of Geography, Environment &amp; Planning</p>
+        </div>
+
+        <div class="abstract-box">
+          <p class="abstract-label">Abstract</p>
+          <p>Consumer behavior is one of the most significant drivers of environmental change in the modern world. Every purchasing decision, travel habit, and disposal choice made by billions of people adds up to a planetary impact that science can no longer ignore. This paper explores how everyday consumer actions affect environmental sustainability, what behavioral science tells us about why people do or do not make eco-friendly choices, and how students at the University of South Florida (USF) can play a meaningful role in shifting those patterns. Drawing on recent research and public data, this paper argues that individual behavior change, when supported by the right systems and policies, can contribute substantially to a more sustainable future.</p>
+          <div class="keywords">
+            <span class="keyword">consumer behavior</span>
+            <span class="keyword">environmental sustainability</span>
+            <span class="keyword">green consumption</span>
+            <span class="keyword">carbon footprint</span>
+            <span class="keyword">climate change</span>
+            <span class="keyword">USF</span>
+            <span class="keyword">behavioral science</span>
+          </div>
+        </div>
+      </div>
+      <!-- /Cover -->
+
+      <!-- Section content injected here by router.js -->
+      <div id="section-container" role="region" aria-live="polite" aria-label="Section content">
+        <!-- Loading state -->
+        <p style="color:var(--color-text-tertiary);font-size:14px;">Loading section…</p>
+      </div>
+
+      <!-- Prev / Next navigation injected by router.js -->
+      <div id="section-nav"></div>
+
+      <!-- ── Site Footer ─────────────────────────────────────── -->
+      <footer class="site-footer" role="contentinfo">
+        <div class="footer-logos">
+          <img src="images/usf_logo.png" alt="University of South Florida" class="footer-logo">
+          <img src="images/honors_logo.png" alt="USF Honors College" class="footer-logo">
+        </div>
+        <div class="footer-info">
+          <strong>Tuan Khang Phan</strong>
+          <span>IDH 3350 — Natural Science &nbsp;|&nbsp; Prof. Andrew Hargrove</span>
+          <span>University of South Florida &nbsp;|&nbsp; College of Arts and Sciences &nbsp;|&nbsp; April 2026</span>
+        </div>
+        <p class="footer-copy">&copy; 2026 Tuan Khang Phan. Written for academic purposes at USF.</p>
+      </footer>
+
+    </div><!-- /content-inner -->
+  </main>
+
+</div><!-- /app-shell -->
+
+<!-- Scripts (load after DOM) -->
+<script src="js/router.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/charts.js"></script>
+
+</body>
+</html>

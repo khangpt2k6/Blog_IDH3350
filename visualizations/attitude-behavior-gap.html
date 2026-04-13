@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mind the Gap — Kollmuss & Agyeman (2002)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap">
+<style>
+/* ── Reset & base ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green-dark:   #1e6b3a;
+  --green-mid:    #2d9048;
+  --green-light:  #e6f4ec;
+  --amber:        #d97706;
+  --amber-light:  #fef3c7;
+  --red:          #b91c1c;
+  --red-light:    #fee2e2;
+  --blue:         #1a6b9a;
+  --blue-light:   #e8f4fb;
+  --neutral-100:  #f8f8f6;
+  --neutral-200:  #eeeeeb;
+  --neutral-300:  #d8d8d4;
+  --neutral-500:  #7a7a74;
+  --neutral-700:  #3a3a36;
+  --neutral-900:  #1a1a18;
+  --font-serif:   'Lora', Georgia, serif;
+  --font-sans:    'Source Sans 3', system-ui, sans-serif;
+  --radius:       10px;
+  --shadow-sm:    0 1px 4px rgba(0,0,0,0.08);
+  --shadow-md:    0 4px 16px rgba(0,0,0,0.12);
+  --shadow-lg:    0 8px 32px rgba(0,0,0,0.16);
+  --transition:   0.22s cubic-bezier(0.4,0,0.2,1);
+}
+html, body {
+  font-family: var(--font-sans);
+  background: var(--neutral-100);
+  color: var(--neutral-900);
+  min-height: 100%;
+}
+
+/* ── Outer wrapper ────────────────────────────────────────── */
+.viz-wrap { max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+
+/* ── Header ───────────────────────────────────────────────── */
+.viz-header {
+  text-align: center;
+  margin-bottom: 2.25rem;
+}
+.viz-eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--green-dark);
+  margin-bottom: 0.5rem;
+}
+.viz-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 3vw, 1.75rem);
+  font-weight: 600; line-height: 1.3;
+  color: var(--neutral-900);
+  margin-bottom: 0.5rem;
+}
+.viz-subtitle {
+  font-size: 13px; color: var(--neutral-500);
+  max-width: 560px; margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── Main diagram ─────────────────────────────────────────── */
+.diagram {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 0;
+  margin-bottom: 2rem;
+}
+
+/* External factors row */
+.external-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-bottom: 1rem;
+}
+
+/* Flow row */
+.flow-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  position: relative;
+  padding: 0.5rem 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+/* Internal factors row */
+.internal-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+}
+
+/* ── Flow nodes ───────────────────────────────────────────── */
+.flow-node {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 110px;
+  min-height: 80px;
+  border-radius: var(--radius);
+  padding: 0.75rem 0.5rem;
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+  position: relative;
+  text-align: center;
+  z-index: 2;
+}
+.flow-node:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.flow-node.active { transform: translateY(-3px); box-shadow: var(--shadow-lg); outline: 2px solid var(--green-dark); outline-offset: 2px; }
+
+.flow-node .node-icon { font-size: 1.5rem; margin-bottom: 0.3rem; line-height: 1; }
+.flow-node .node-label { font-size: 12px; font-weight: 700; line-height: 1.25; }
+.flow-node .node-sub   { font-size: 10px; margin-top: 2px; opacity: 0.75; }
+
+/* Node color themes */
+.node-knowledge   { background: var(--blue-light);   border: 1.5px solid #93c5fd; color: #1e40af; }
+.node-awareness   { background: #f0fdf4;              border: 1.5px solid #86efac; color: var(--green-dark); }
+.node-attitude    { background: var(--amber-light);   border: 1.5px solid #fcd34d; color: #92400e; }
+.node-behavior    { background: var(--green-light);   border: 2px   solid var(--green-mid); color: var(--green-dark); }
+.node-behavior .node-label { font-size: 11px; }
+
+/* ── Barriers ─────────────────────────────────────────────── */
+.barrier {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  padding: 0 2px;
+  transition: transform var(--transition);
+}
+.barrier:hover { transform: scale(1.1); }
+.barrier.active .barrier-icon { box-shadow: var(--shadow-md); }
+
+.barrier-line {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, var(--neutral-300), var(--neutral-300));
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.barrier-icon {
+  position: relative;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  border: 2px solid;
+  background: white;
+  transition: box-shadow var(--transition);
+  flex-shrink: 0;
+}
+.barrier-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+  text-transform: uppercase; margin-top: 5px; text-align: center;
+  color: var(--neutral-500); line-height: 1.2;
+  max-width: 62px;
+}
+
+.barrier-small { border-color: var(--amber); color: var(--amber); }
+.barrier-medium { border-color: #f97316; color: #f97316; }
+.barrier-large {
+  border-color: var(--red); color: var(--red);
+  width: 36px; height: 36px; font-size: 1rem;
+}
+.barrier-large ~ .barrier-label { color: var(--red); }
+
+/* The big gap callout */
+.gap-callout {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--red);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ── Factor chips (external / internal) ──────────────────── */
+.factor-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+  white-space: nowrap;
+}
+.factor-chip:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.factor-chip.active { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+.factor-chip .chip-icon { font-size: 0.9rem; flex-shrink: 0; }
+
+/* External chip theme */
+.chip-ext {
+  background: white;
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.chip-ext.active, .chip-ext:hover { background: var(--blue-light); }
+
+/* Internal chip theme */
+.chip-int {
+  background: white;
+  border-color: var(--green-dark);
+  color: var(--green-dark);
+}
+.chip-int.active, .chip-int:hover { background: var(--green-light); }
+
+/* Row labels */
+.row-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--neutral-500);
+  margin-right: 8px; white-space: nowrap;
+  display: flex; align-items: center;
+}
+
+/* ── Info panel ───────────────────────────────────────────── */
+.info-panel {
+  background: white;
+  border-radius: var(--radius);
+  border: 1px solid var(--neutral-300);
+  box-shadow: var(--shadow-md);
+  padding: 1.25rem 1.5rem;
+  min-height: 120px;
+  transition: opacity 0.18s ease;
+  position: relative;
+  overflow: hidden;
+}
+.info-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: var(--green-mid);
+  border-radius: 4px 0 0 4px;
+  transition: background 0.2s;
+}
+.info-panel.color-blue::before  { background: var(--blue); }
+.info-panel.color-amber::before { background: var(--amber); }
+.info-panel.color-red::before   { background: var(--red); }
+.info-panel.color-green::before { background: var(--green-mid); }
+
+.info-panel .panel-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--neutral-500);
+  margin-bottom: 0.35rem;
+}
+.info-panel .panel-title {
+  font-family: var(--font-serif);
+  font-size: 1.1rem; font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--neutral-900);
+}
+.info-panel .panel-body {
+  font-size: 14px; line-height: 1.75;
+  color: var(--neutral-700);
+}
+.info-panel .panel-body strong { color: var(--neutral-900); }
+.info-panel .panel-hint {
+  font-size: 12px; color: var(--neutral-500);
+  margin-top: 0.75rem; font-style: italic;
+}
+.info-panel .panel-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 0.75rem;
+}
+.info-panel .panel-tag {
+  font-size: 11px; padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--neutral-200);
+  color: var(--neutral-700);
+}
+
+/* ── Legend ───────────────────────────────────────────────── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--neutral-200);
+  border-radius: var(--radius);
+}
+.legend-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--neutral-700);
+}
+.legend-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%; flex-shrink: 0;
+}
+
+/* ── Citation ─────────────────────────────────────────────── */
+.citation-box {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--neutral-300);
+  font-size: 12px; color: var(--neutral-500);
+  line-height: 1.6;
+}
+.citation-box a { color: var(--blue); text-decoration: none; }
+.citation-box a:hover { text-decoration: underline; }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .flow-node { width: 88px; min-height: 70px; }
+  .barrier   { width: 44px; }
+  .viz-title { font-size: 1.2rem; }
+  .barrier-label { display: none; }
+}
+
+/* ── Pulse animation for behavior node ───────────────────── */
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0   rgba(45,144,72,0.4); }
+  70%  { box-shadow: 0 0 0 10px rgba(45,144,72,0); }
+  100% { box-shadow: 0 0 0 0   rgba(45,144,72,0); }
+}
+.node-behavior { animation: pulse-ring 2.5s ease-out infinite; }
+
+/* ── Entrance animation ───────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.viz-header  { animation: fadeUp 0.5s ease both; }
+.diagram     { animation: fadeUp 0.5s ease 0.1s both; }
+.info-panel  { animation: fadeUp 0.5s ease 0.2s both; }
+.legend      { animation: fadeUp 0.5s ease 0.3s both; }
+</style>
+</head>
+<body>
+
+<div class="viz-wrap">
+
+  <!-- Header -->
+  <div class="viz-header">
+    <p class="viz-eyebrow">Interactive Model Visualization</p>
+    <h1 class="viz-title">Mind the Gap: Why Don't Attitudes Lead to Action?</h1>
+    <p class="viz-subtitle">Based on Kollmuss &amp; Agyeman (2002). Click any node, barrier, or factor to explore the model. The <span style="color:var(--red);font-weight:700;">red barrier</span> is the famous "green gap."</p>
+  </div>
+
+  <!-- Diagram -->
+  <div class="diagram">
+
+    <!-- External factors (top) -->
+    <div class="external-row">
+      <span class="row-label">External</span>
+      <span class="factor-chip chip-ext" data-key="institutional"><span class="chip-icon">🏛️</span>Institutional</span>
+      <span class="factor-chip chip-ext" data-key="economic"><span class="chip-icon">💰</span>Economic</span>
+      <span class="factor-chip chip-ext" data-key="social"><span class="chip-icon">👥</span>Social &amp; Cultural</span>
+      <span class="factor-chip chip-ext" data-key="infrastructure"><span class="chip-icon">🏗️</span>Infrastructure</span>
+    </div>
+
+    <!-- Main flow row -->
+    <div class="flow-row">
+
+      <!-- Node: Knowledge -->
+      <div class="flow-node node-knowledge" data-key="knowledge">
+        <div class="node-icon">📚</div>
+        <div class="node-label">Environmental Knowledge</div>
+        <div class="node-sub">Factual &amp; action</div>
+      </div>
+
+      <!-- Barrier 1 -->
+      <div class="barrier" data-key="barrier1">
+        <div class="barrier-line">
+          <div class="barrier-icon barrier-small">⚡</div>
+        </div>
+        <div class="barrier-label">Relevance Barrier</div>
+      </div>
+
+      <!-- Node: Awareness -->
+      <div class="flow-node node-awareness" data-key="awareness">
+        <div class="node-icon">💡</div>
+        <div class="node-label">Environmental Awareness</div>
+        <div class="node-sub">Cognitive recognition</div>
+      </div>
+
+      <!-- Barrier 2 -->
+      <div class="barrier" data-key="barrier2">
+        <div class="barrier-line">
+          <div class="barrier-icon barrier-medium">🔥</div>
+        </div>
+        <div class="barrier-label">Value Conflict</div>
+      </div>
+
+      <!-- Node: Attitude -->
+      <div class="flow-node node-attitude" data-key="attitude">
+        <div class="node-icon">💭</div>
+        <div class="node-label">Pro-Environmental Attitude</div>
+        <div class="node-sub">Values &amp; concern</div>
+      </div>
+
+      <!-- Barrier 3 — THE GREEN GAP -->
+      <div class="barrier" data-key="barrier3" style="width:72px;position:relative;">
+        <div class="barrier-line">
+          <div class="barrier-icon barrier-large">🚧</div>
+        </div>
+        <div class="barrier-label" style="color:var(--red);font-size:9px;">THE GREEN GAP</div>
+        <div class="gap-callout">Attitude → Behavior</div>
+      </div>
+
+      <!-- Node: Behavior -->
+      <div class="flow-node node-behavior" data-key="behavior" style="width:120px;">
+        <div class="node-icon">🌱</div>
+        <div class="node-label">Pro-Environmental Behavior</div>
+        <div class="node-sub">Actual action</div>
+      </div>
+
+    </div><!-- /flow-row -->
+
+    <!-- Internal factors (bottom) -->
+    <div class="internal-row">
+      <span class="row-label">Internal</span>
+      <span class="factor-chip chip-int" data-key="motivation"><span class="chip-icon">🔋</span>Motivation</span>
+      <span class="factor-chip chip-int" data-key="values"><span class="chip-icon">⚖️</span>Values</span>
+      <span class="factor-chip chip-int" data-key="emotion"><span class="chip-icon">❤️</span>Emotional Involvement</span>
+      <span class="factor-chip chip-int" data-key="locus"><span class="chip-icon">🎯</span>Locus of Control</span>
+      <span class="factor-chip chip-int" data-key="habits"><span class="chip-icon">🔄</span>Old Habits</span>
+    </div>
+
+  </div><!-- /diagram -->
+
+  <!-- Info panel -->
+  <div class="info-panel color-green" id="info-panel">
+    <p class="panel-eyebrow">How to use this diagram</p>
+    <p class="panel-title">Click any element to learn more</p>
+    <p class="panel-body">
+      This diagram maps the <strong>Kollmuss &amp; Agyeman (2002)</strong> model of pro-environmental behavior.
+      The central flow shows the path from <strong>Knowledge → Awareness → Attitude → Behavior</strong>.
+      The ⚡🔥🚧 icons represent barriers that break this chain.
+      Chips above and below show external and internal factors that shape or block behavior.
+    </p>
+    <p class="panel-hint">Start by clicking the red "THE GREEN GAP" barrier — it's the core finding of the paper.</p>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#93c5fd"></div>Flow node — step in the chain</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Barrier — friction between steps</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>External factor — outside the individual</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green-mid)"></div>Internal factor — inside the individual</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>The Green Gap — biggest barrier</div>
+  </div>
+
+  <!-- Citation -->
+  <div class="citation-box">
+    <strong>Source:</strong> Kollmuss, A., &amp; Agyeman, J. (2002). Mind the gap: Why do people act environmentally and what are the barriers to pro-environmental behavior?
+    <em>Environmental Education Research, 8</em>(3), 239–260.
+    <a href="https://doi.org/10.1080/13504620220145401" target="_blank" rel="noopener">https://doi.org/10.1080/13504620220145401</a>
+    <br><small>Visualization created for the USF Student Research Blog, April 2026.</small>
+  </div>
+
+</div><!-- /viz-wrap -->
+
+<script>
+/* ── Knowledge base for each clickable element ────────────── */
+const DATA = {
+  knowledge: {
+    color: 'blue',
+    eyebrow: 'Flow Node 1',
+    title: 'Environmental Knowledge',
+    body: `Kollmuss & Agyeman distinguish two types of knowledge:
+      <br><br><strong>Factual knowledge</strong> — knowing that climate change is happening, that plastics pollute oceans, that beef production emits methane.
+      <br><br><strong>Action-related knowledge</strong> — knowing what <em>to do</em>: which products to choose, how to recycle correctly, which behaviors actually reduce impact.
+      <br><br>The paper notes that knowledge alone is necessary but far from sufficient for behavior change.`,
+    tags: ['Factual knowledge', 'Action knowledge', 'Environmental literacy']
+  },
+  awareness: {
+    color: 'green',
+    eyebrow: 'Flow Node 2',
+    title: 'Environmental Awareness',
+    body: `Awareness goes beyond knowing facts — it is the <strong>cognitive and emotional recognition</strong> that environmental problems are real, serious, and personally relevant.
+      <br><br>People can know that ocean plastic is a problem without feeling any personal connection to it. Awareness requires that the issue feels <strong>proximate</strong> — that it relates to places, species, or futures the person cares about.
+      <br><br>For Tampa Bay students, awareness is built-in: rising sea levels and hurricane risk make the environment personally relevant.`,
+    tags: ['Cognitive recognition', 'Personal relevance', 'Emotional salience']
+  },
+  attitude: {
+    color: 'amber',
+    eyebrow: 'Flow Node 3',
+    title: 'Pro-Environmental Attitude',
+    body: `An attitude is a <strong>learned predisposition to respond</strong> favorably or unfavorably toward environmental behaviors. Someone with a strong pro-environmental attitude genuinely <em>wants</em> to act sustainably.
+      <br><br>Attitudes are shaped by values (biospheric, altruistic, egoistic), emotional involvement with nature, and social norms in one's community.
+      <br><br>Importantly, Kollmuss & Agyeman show that <strong>strong attitudes still don't reliably produce behavior</strong> — the biggest break in the chain comes next.`,
+    tags: ['Values', 'Biospheric values', 'Altruism', 'Egoism', 'Predisposition']
+  },
+  behavior: {
+    color: 'green',
+    eyebrow: 'Flow Node 4 — The Goal',
+    title: 'Pro-Environmental Behavior',
+    body: `This is the outcome the model is trying to explain and promote. Pro-environmental behavior includes:
+      <br><br>• Purchasing decisions (sustainable products, reduced meat, second-hand clothing)
+      <br>• Travel choices (cycling, public transit, reduced flying)
+      <br>• Disposal habits (recycling, composting, e-waste drop-off)
+      <br>• Civic behaviors (voting for environmental policy, community organizing)
+      <br><br>The key insight from Kollmuss & Agyeman is that reaching this node requires overcoming barriers at <strong>every stage</strong> of the chain — not just one.`,
+    tags: ['Purchasing', 'Travel', 'Disposal', 'Civic action']
+  },
+  barrier1: {
+    color: 'amber',
+    eyebrow: 'Barrier 1 — Minor',
+    title: '⚡ The Relevance Barrier: Knowledge → Awareness',
+    body: `Even when people possess environmental facts, they may fail to develop true <strong>awareness</strong> because the information doesn't feel personally relevant.
+      <br><br>This barrier arises from <strong>psychological distance</strong>: climate change feels far away in time and geography. Abstract statistics about global emissions don't trigger the emotional response needed for awareness.
+      <br><br><strong>How to bridge it:</strong> Make environmental problems local and immediate. Connecting global emissions data to Tampa Bay sea level rise is exactly this strategy.`,
+    tags: ['Psychological distance', 'Personal relevance', 'Emotional salience']
+  },
+  barrier2: {
+    color: 'amber',
+    eyebrow: 'Barrier 2 — Moderate',
+    title: '🔥 The Value Conflict: Awareness → Attitude',
+    body: `Even people who are aware of environmental problems may not develop a strong pro-environmental <strong>attitude</strong> because environmental values compete with other deeply held values.
+      <br><br>Examples of value conflicts:
+      <br>• Freedom &amp; convenience vs. environmental restraint
+      <br>• Economic self-interest vs. collective good
+      <br>• Cultural identity (e.g., car culture) vs. sustainable transport
+      <br><br>This barrier is moderated by <strong>worldview</strong>, <strong>locus of control</strong>, and the dominant values in one's social group.`,
+    tags: ['Value conflict', 'Worldview', 'Competing priorities', 'Cultural identity']
+  },
+  barrier3: {
+    color: 'red',
+    eyebrow: 'Barrier 3 — THE GREEN GAP (largest barrier)',
+    title: '🚧 The Attitude–Behavior Gap',
+    body: `This is the central finding of the paper. Even people with <strong>strong pro-environmental attitudes</strong> routinely fail to act on them. This gap — nicknamed the <em>green gap</em> — is caused by a layered stack of obstacles:
+      <br><br><strong>Internal blockers:</strong> Old habits, present bias (preferring immediate comfort), single-action bias, perceived inefficacy ("my actions don't matter").
+      <br><br><strong>External blockers:</strong> High cost of sustainable products, lack of infrastructure (no bike lanes, no recycling), social norms that make sustainable choices feel abnormal, and institutional lock-in.
+      <br><br>This is why individual willpower alone cannot close the gap — systemic change is required.`,
+    tags: ['Green gap', 'Attitude-behavior gap', 'Habit', 'Present bias', 'Infrastructure', 'Social norms']
+  },
+  institutional: {
+    color: 'blue',
+    eyebrow: 'External Factor',
+    title: '🏛️ Institutional Factors',
+    body: `Government policies, regulations, and institutional structures that either enable or constrain sustainable behavior.
+      <br><br>Examples: carbon pricing, extended producer responsibility laws, mandatory recycling programs, building codes that require energy efficiency, and university sustainability policies (like USF's carbon neutrality goals).
+      <br><br>Institutional factors are among the most powerful levers for behavior change because they change the <strong>default option</strong> for everyone, not just motivated individuals.`,
+    tags: ['Policy', 'Regulation', 'Carbon pricing', 'Extended producer responsibility']
+  },
+  economic: {
+    color: 'blue',
+    eyebrow: 'External Factor',
+    title: '💰 Economic Factors',
+    body: `The relative cost and financial incentives attached to different consumer choices.
+      <br><br>Sustainable products often carry a <strong>green premium</strong> — they cost more than conventional alternatives. This creates a structural barrier for lower-income households regardless of their values or attitudes.
+      <br><br>Economic interventions that reduce this barrier include: subsidies for electric vehicles, tax credits for home solar, lower prices for plant-based foods, and financial penalties on the most polluting choices (carbon taxes).`,
+    tags: ['Green premium', 'Price signals', 'Subsidies', 'Carbon tax', 'Income inequality']
+  },
+  social: {
+    color: 'blue',
+    eyebrow: 'External Factor',
+    title: '👥 Social & Cultural Factors',
+    body: `Social norms — what people perceive as normal, expected, or admirable in their community — are among the most powerful external drivers of behavior.
+      <br><br>Key mechanisms:
+      <br>• <strong>Descriptive norms:</strong> "Everyone else drives to campus" makes cycling feel abnormal.
+      <br>• <strong>Injunctive norms:</strong> Social approval or disapproval for sustainable choices.
+      <br>• <strong>Cultural identity:</strong> In car-centric cultures, choosing not to drive can feel like a rejection of community identity.
+      <br><br>This is why peer-visible sustainable behavior by respected role models can shift norms rapidly.`,
+    tags: ['Social norms', 'Peer influence', 'Descriptive norms', 'Cultural identity']
+  },
+  infrastructure: {
+    color: 'blue',
+    eyebrow: 'External Factor',
+    title: '🏗️ Physical Infrastructure',
+    body: `The built environment either enables or forecloses sustainable choices. This is a purely external factor — no amount of motivation can overcome missing infrastructure.
+      <br><br>Examples of enabling infrastructure:
+      <br>• Bike lanes and secure cycle parking
+      <br>• Convenient, reliable public transit
+      <br>• Accessible recycling and composting facilities
+      <br>• EV charging stations
+      <br>• Plant-based options in every cafeteria
+      <br><br>Tampa's car-dependent suburban layout is a classic example of infrastructure that makes sustainable transport structurally difficult.`,
+    tags: ['Built environment', 'Bike lanes', 'Public transit', 'Recycling access']
+  },
+  motivation: {
+    color: 'green',
+    eyebrow: 'Internal Factor',
+    title: '🔋 Motivation',
+    body: `The internal drive behind pro-environmental behavior. Kollmuss & Agyeman distinguish:
+      <br><br><strong>Intrinsic motivation:</strong> Acting sustainably because you genuinely care about nature and the environment — not for reward or approval.
+      <br><br><strong>Extrinsic motivation:</strong> Acting sustainably for social approval, financial incentives, or to avoid disapproval.
+      <br><br>Intrinsic motivation produces more consistent behavior over time. Extrinsic motivation is fragile — it disappears when the incentive disappears. Campaigns that appeal to identity ("I'm someone who cares about the planet") tend to build more durable behavior change.`,
+    tags: ['Intrinsic motivation', 'Extrinsic motivation', 'Identity', 'Durable change']
+  },
+  values: {
+    color: 'green',
+    eyebrow: 'Internal Factor',
+    title: '⚖️ Values',
+    body: `Values are the deep, enduring beliefs that guide what a person considers important. The paper draws on Stern et al. (1999) value orientations:
+      <br><br><strong>Biospheric values:</strong> Intrinsic value placed on nature and all living things, independent of human benefit.
+      <br><br><strong>Altruistic values:</strong> Concern for other people, future generations, and global equity.
+      <br><br><strong>Egoistic values:</strong> Concern primarily for personal cost and benefit.
+      <br><br>People with stronger biospheric and altruistic values are more likely to develop pro-environmental attitudes — but values alone still don't guarantee behavior.`,
+    tags: ['Biospheric values', 'Altruistic values', 'Egoistic values', 'Stern et al. 1999']
+  },
+  emotion: {
+    color: 'green',
+    eyebrow: 'Internal Factor',
+    title: '❤️ Emotional Involvement',
+    body: `Emotional connection to the natural world is one of the strongest predictors of pro-environmental behavior. This includes:
+      <br><br>• <strong>Love of nature</strong> — a felt attachment to specific places, species, or ecosystems
+      <br>• <strong>Ecological grief</strong> — distress at environmental loss, which can motivate action
+      <br>• <strong>Eco-anxiety</strong> — worry about the future, which can either motivate or paralyze
+      <br><br>Kollmuss & Agyeman argue that environmental education campaigns which engage emotions — rather than just presenting facts — are far more effective at moving people to action.`,
+    tags: ['Love of nature', 'Ecological grief', 'Eco-anxiety', 'Emotional appeals']
+  },
+  locus: {
+    color: 'green',
+    eyebrow: 'Internal Factor',
+    title: '🎯 Locus of Control',
+    body: `Locus of control is the belief about whether <em>one's own actions</em> can produce meaningful outcomes.
+      <br><br><strong>Internal locus:</strong> "My choices make a difference." People with an internal locus are far more likely to take pro-environmental action.
+      <br><br><strong>External locus:</strong> "Nothing I do matters — corporations and governments are the only real actors." This belief — even when partly accurate — functions as a demotivating barrier.
+      <br><br>This concept explains the common response: "Why should I recycle when companies pollute millions of tons?" Campaigns must address this by showing the real impact of individual and collective action.`,
+    tags: ['Internal locus', 'External locus', 'Perceived efficacy', 'Agency']
+  },
+  habits: {
+    color: 'green',
+    eyebrow: 'Internal Factor — Major Barrier',
+    title: '🔄 Old Habits & Behavior Patterns',
+    body: `Habits are the strongest internal barrier between attitude and behavior — they appear directly in the "green gap."
+      <br><br>Once a behavior is established (driving to campus, buying single-use plastic, eating meat at every meal), it becomes <strong>automatic</strong>. The brain bypasses deliberate decision-making and executes the routine without conscious thought.
+      <br><br>This means that even a person with strong environmental values may continue polluting behaviors simply because they are on <strong>autopilot</strong>.
+      <br><br>Habit disruption strategies (like moving to a new city, starting a new job, or joining a new community) create "windows of change" where new sustainable behaviors can be established before old ones re-form.`,
+    tags: ['Automaticity', 'Habit disruption', 'Windows of change', 'Status quo bias']
+  }
+};
+
+/* ── Panel renderer ───────────────────────────────────────── */
+const panel = document.getElementById('info-panel');
+
+function renderPanel(key) {
+  const d = DATA[key];
+  if (!d) return;
+
+  panel.className = `info-panel color-${d.color}`;
+  panel.innerHTML = `
+    <p class="panel-eyebrow">${d.eyebrow}</p>
+    <p class="panel-title">${d.title}</p>
+    <p class="panel-body">${d.body}</p>
+    ${d.tags ? `<div class="panel-tags">${d.tags.map(t => `<span class="panel-tag">${t}</span>`).join('')}</div>` : ''}
+  `;
+}
+
+/* ── Click handlers ───────────────────────────────────────── */
+let activeEl = null;
+
+function clearActive() {
+  if (activeEl) {
+    activeEl.classList.remove('active');
+    activeEl = null;
+  }
+}
+
+document.querySelectorAll('[data-key]').forEach(el => {
+  el.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const key = el.dataset.key;
+
+    if (activeEl === el) {
+      clearActive();
+      // Reset panel to default
+      panel.className = 'info-panel color-green';
+      panel.innerHTML = `
+        <p class="panel-eyebrow">How to use this diagram</p>
+        <p class="panel-title">Click any element to learn more</p>
+        <p class="panel-body">Click any node, barrier, or factor chip to read about that component of the model. Start with the red <strong>🚧 THE GREEN GAP</strong> barrier — it's the paper's central finding.</p>
+      `;
+      return;
+    }
+
+    clearActive();
+    el.classList.add('active');
+    activeEl = el;
+    renderPanel(key);
+
+    // Scroll panel into view smoothly
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+});
+
+// Auto-open the green gap barrier on load after a short delay
+setTimeout(() => {
+  const gapBarrier = document.querySelector('[data-key="barrier3"]');
+  if (gapBarrier) {
+    gapBarrier.classList.add('active');
+    activeEl = gapBarrier;
+    renderPanel('barrier3');
+  }
+}, 800);
+</script>
+</body>
+</html>
