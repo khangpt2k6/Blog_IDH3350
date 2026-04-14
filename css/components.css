@@ -14,11 +14,75 @@
 .journal-name { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--color-text-secondary); }
 .journal-date { font-size: 12px; color: var(--color-text-tertiary); }
 
-/* ── Title block ──────────────────────────────────────────── */
-.title-block { margin-bottom: 2rem; }
-.main-title   { font-family: var(--font-serif); font-size: 2.1rem; font-weight: 600; line-height: 1.25; margin-bottom: 1rem; color: var(--color-text-primary); }
-.author-line  { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 0.4rem; }
-.affil        { font-size: 13px; color: var(--color-text-tertiary); font-style: italic; }
+/* ── Paper meta bar ───────────────────────────────────────── */
+.paper-meta-bar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 1.1rem;
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  margin-bottom: 1.5rem;
+}
+.paper-meta-main {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0 0.55rem;
+  overflow: hidden;
+  min-width: 0;
+}
+.paper-meta-author {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.paper-meta-info {
+  font-size: 12.5px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+.paper-meta-dot {
+  font-size: 11px;
+  color: var(--color-border-primary);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* ── PDF read button ──────────────────────────────────────── */
+.paper-pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: 20px;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+.paper-pdf-btn:hover {
+  background: var(--color-background-tertiary);
+  border-color: var(--color-border-primary);
+}
+.paper-pdf-btn svg { flex-shrink: 0; opacity: 0.65; }
+
+@media (max-width: 640px) {
+  .paper-meta-bar { flex-wrap: wrap; justify-content: flex-start; }
+  .paper-meta-main { flex-wrap: wrap; gap: 2px 0.5rem; }
+  .paper-meta-info:nth-child(n+4) { display: none; }
+  .paper-pdf-btn { margin-top: 2px; }
+}
 
 /* ── Divider ──────────────────────────────────────────────── */
 .divider { border: none; border-top: 1px solid var(--color-border-tertiary); margin: 2rem 0; }
@@ -53,7 +117,7 @@
 .body-text { font-size: 15px; line-height: 1.85; margin-bottom: 1rem; color: var(--color-text-primary); }
 
 /* ── Stat grid ────────────────────────────────────────────── */
-.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 1.5rem 0; }
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 1.5rem 0; }
 .stat-card {
   background: var(--color-background-secondary);
   border-radius: var(--border-radius-md);
@@ -82,6 +146,23 @@
 .image-suggestion figcaption { font-size: 12px; color: var(--color-text-tertiary); margin-top: 0.4rem; font-style: italic; }
 
 /* ── Chart figures ────────────────────────────────────────── */
+/* ── 16:9 responsive video wrapper ───────────────────────── */
+.video-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+}
+.video-wrap iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
 .chart-figure {
   margin: 0;
   background: var(--color-background-secondary);
