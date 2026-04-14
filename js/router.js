@@ -5,6 +5,7 @@
  */
 
 const SECTIONS = [
+  { hash: 'abstract',   file: 'sections/s0-abstract.html',         title: 'Abstract' },
   { hash: 'section-1',  file: 'sections/s1-introduction.html',    title: '1. Introduction' },
   { hash: 'section-2',  file: 'sections/s2-background.html',       title: '2. Background' },
   { hash: 'section-3',  file: 'sections/s3-consumer-damage.html',  title: '3. Consumer Damage' },
@@ -23,7 +24,7 @@ const cache      = {};   // fragment cache keyed by hash
 
 function getHash() {
   const h = window.location.hash.replace('#', '');
-  return h || 'section-1';
+  return h || 'abstract';
 }
 
 function getSectionIndex(hash) {

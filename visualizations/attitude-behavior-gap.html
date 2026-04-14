@@ -113,28 +113,46 @@ html, body {
 .node {
   flex-shrink: 0; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  width: 116px; min-height: 92px;
-  border-radius: var(--radius-md); padding: 0.9rem 0.6rem;
+  width: 116px; min-height: 100px;
+  border-radius: var(--radius-md); padding: 0.9rem 0.6rem 1.1rem;
   cursor: pointer; text-align: center; position: relative; z-index: 2;
   border: 1.5px solid;
-  transition: transform var(--t), box-shadow var(--t);
+  transition: transform var(--t), box-shadow var(--t), border-color var(--t);
+}
+/* Subtle click-hint dot at bottom */
+.node::after {
+  content: '';
+  position: absolute;
+  bottom: 6px; left: 50%; transform: translateX(-50%);
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--neutral-300);
+  transition: background var(--t), transform var(--t);
 }
 .node:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.node:hover::after { background: var(--neutral-400); }
 .node.active {
   transform: translateY(-3px);
   box-shadow: var(--shadow-md);
-  outline: 2px solid currentColor;
-  outline-offset: 3px;
+  border-width: 2px;
+}
+.node.active::after {
+  background: currentColor;
+  width: 6px; height: 6px;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.08);
 }
 .node-icon {
-  width: 36px; height: 36px;
-  border-radius: 8px;
+  width: 38px; height: 38px;
+  border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 0.5rem; flex-shrink: 0;
+  transition: background var(--t);
 }
 .node-icon svg { width: 18px; height: 18px; stroke-width: 1.75; }
 .node-label { font-size: 11.5px; font-weight: 700; line-height: 1.3; }
 .node-sub   { font-size: 9.5px; margin-top: 3px; opacity: 0.65; line-height: 1.3; }
+/* Active icon fill hint */
+.node.active .node-icon { filter: brightness(0.94); }
 
 /* Node themes — all neutral except the outcome */
 .node-knowledge {
@@ -244,41 +262,49 @@ html, body {
 .chip-int:hover, .chip-int.active { background: var(--neutral-200); border-color: var(--neutral-400); }
 
 /* ── Info panel ──────────────────────────────────────────── */
-.panel-wrap { margin-top: 1rem; }
-.info-panel {
-  background: white; border-radius: var(--radius-md);
-  border: 1px solid var(--neutral-200); box-shadow: var(--shadow-sm);
-  padding: 1.25rem 1.5rem; position: relative; overflow: hidden;
-  min-height: 120px;
-  transition: opacity 0.15s ease;
+.panel-wrap {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--neutral-200);
+  padding-top: 1.25rem;
 }
-.info-panel::before {
-  content: ''; position: absolute; top: 0; left: 0;
-  width: 4px; height: 100%;
-  background: var(--neutral-300);
+.info-panel {
+  background: transparent;
+  padding: 0; position: relative;
+  min-height: 80px;
+  transition: opacity 0.18s ease;
+}
+/* Accent stripe as a left-rule on the eyebrow row */
+.panel-head {
+  display: flex; align-items: center; gap: 0.6rem;
+  margin-bottom: 0.55rem;
+}
+.panel-head-rule {
+  width: 3px; height: 1.1rem; border-radius: 2px;
+  background: var(--neutral-300); flex-shrink: 0;
   transition: background 0.18s;
 }
-.info-panel.c-blue::before   { background: var(--neutral-400); }
-.info-panel.c-amber::before  { background: var(--neutral-400); }
-.info-panel.c-orange::before { background: var(--neutral-400); }
-.info-panel.c-green::before  { background: var(--accent-mid); }
+.info-panel.c-green  .panel-head-rule { background: var(--accent-mid); }
+.info-panel.c-blue   .panel-head-rule { background: var(--neutral-500); }
+.info-panel.c-amber  .panel-head-rule { background: var(--neutral-500); }
+.info-panel.c-orange .panel-head-rule { background: var(--neutral-500); }
 
 .panel-eyebrow {
   font-size: 10px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--neutral-400); margin-bottom: 4px;
+  text-transform: uppercase; color: var(--neutral-400);
 }
 .panel-title {
-  font-family: var(--font-serif); font-size: 1.05rem; font-weight: 600;
-  color: var(--neutral-900); margin-bottom: 0.5rem; line-height: 1.35;
+  font-family: var(--font-serif); font-size: 1.1rem; font-weight: 600;
+  color: var(--neutral-900); margin-bottom: 0.55rem; line-height: 1.35;
 }
-.panel-body  { font-size: 13.5px; line-height: 1.78; color: var(--neutral-700); }
+.panel-body  { font-size: 13.5px; line-height: 1.82; color: var(--neutral-700); }
 .panel-body strong { color: var(--neutral-900); }
 .panel-hint  { font-size: 12px; color: var(--neutral-400); margin-top: 0.6rem; font-style: italic; }
-.panel-tags  { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 0.75rem; }
+.panel-tags  { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 0.85rem; }
 .panel-tag   {
-  font-size: 10.5px; padding: 2px 8px; border-radius: 20px;
+  font-size: 10.5px; padding: 2px 9px; border-radius: 20px;
   background: var(--neutral-100); color: var(--neutral-500);
   border: 1px solid var(--neutral-200);
+  letter-spacing: 0.2px;
 }
 
 /* ── Citation ────────────────────────────────────────────── */
@@ -287,7 +313,7 @@ html, body {
   border-left: 3px solid var(--neutral-300);
   font-size: 11.5px; color: var(--neutral-400); line-height: 1.65;
 }
-.citation a { color: var(--blue-dark); text-decoration: none; }
+.citation a { color: var(--accent-mid); text-decoration: none; }
 .citation a:hover { text-decoration: underline; }
 
 /* ── Responsive ──────────────────────────────────────────── */
@@ -316,7 +342,7 @@ html, body {
   <!-- Header -->
   <div class="viz-header">
     <h1 class="viz-title">Why Don't Attitudes Lead to Action?</h1>
-    <p class="viz-sub">Based on Kollmuss &amp; Agyeman (2002). Click any element to explore the model — each barrier shows where the chain from knowledge to behavior typically breaks.</p>
+    <p class="viz-sub">Based on Kollmuss &amp; Agyeman (2002) — <em>Mind the Gap</em>. Select any node, barrier, or factor below to read the explanation.</p>
   </div>
 
   <!-- Diagram -->
@@ -446,8 +472,8 @@ html, body {
   <!-- Info panel -->
   <div class="panel-wrap">
     <div class="info-panel c-green" id="info-panel">
-      <p class="panel-eyebrow">How to read this</p>
-      <p class="panel-title">Click any element to learn more</p>
+      <div class="panel-head"><div class="panel-head-rule"></div><p class="panel-eyebrow">How to read this</p></div>
+      <p class="panel-title">Select any element to learn more</p>
       <p class="panel-body">This diagram maps the full chain from <strong>Knowledge → Awareness → Attitude → Behavior</strong>, based on Kollmuss &amp; Agyeman (2002). Each circle between the nodes shows where the chain tends to break. The factor chips above and below show what makes each step easier or harder.</p>
     </div>
   </div>
@@ -619,8 +645,8 @@ const DATA = {
 };
 
 const DEFAULT_PANEL = `
-  <p class="panel-eyebrow">How to read this</p>
-  <p class="panel-title">Click any element to learn more</p>
+  <div class="panel-head"><div class="panel-head-rule"></div><p class="panel-eyebrow">How to read this</p></div>
+  <p class="panel-title">Select any element to learn more</p>
   <p class="panel-body">This diagram maps the full chain from <strong>Knowledge → Awareness → Attitude → Behavior</strong>, based on Kollmuss &amp; Agyeman (2002). Each circle between the nodes shows where the chain tends to break. The factor chips above and below show what makes each step easier or harder.</p>
 `;
 
@@ -628,12 +654,14 @@ function renderPanel(key) {
   const d = DATA[key];
   if (!d) return;
   panel.className = `info-panel ${d.c}`;
+  panel.style.opacity = '0';
   panel.innerHTML = `
-    <p class="panel-eyebrow">${d.eyebrow}</p>
+    <div class="panel-head"><div class="panel-head-rule"></div><p class="panel-eyebrow">${d.eyebrow}</p></div>
     <p class="panel-title">${d.title}</p>
     <p class="panel-body">${d.body}</p>
     ${d.tags ? `<div class="panel-tags">${d.tags.map(t=>`<span class="panel-tag">${t}</span>`).join('')}</div>` : ''}
   `;
+  requestAnimationFrame(() => { panel.style.opacity = '1'; });
   panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
