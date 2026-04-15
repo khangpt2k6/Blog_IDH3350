@@ -1,55 +1,81 @@
-/* theme.css — CSS custom properties with concrete fallback values */
+/* theme.css — design tokens */
+
 :root {
-  /* Typography */
-  --font-serif: 'Lora', Georgia, serif;
-  --font-sans:  'Source Sans 3', 'Segoe UI', Arial, sans-serif;
+  /* ── Typography ──────────────────────────────────────────── */
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans:  'DM Sans', 'Segoe UI', Arial, sans-serif;
 
-  /* Text colors */
-  --color-text-primary:   #1a1a1a;
-  --color-text-secondary: #4a4a4a;
+  /* ── Brand colors ────────────────────────────────────────── */
+  --green-900:  #0F2318;
+  --green-800:  #16302B;
+  --green-700:  #1B3D34;
+  --green-600:  #1F6B4A;
+  --green-500:  #1A8A5A;
+  --green-400:  #22A96E;
+  --green-100:  #E4F5ED;
+  --green-50:   #F0FAF5;
+
+  --gold-500:   #C9953A;
+  --gold-400:   #DBA84A;
+  --gold-100:   #FDF3E0;
+
+  /* ── Text colors ─────────────────────────────────────────── */
+  --color-text-primary:   #1A1A1A;
+  --color-text-secondary: #444444;
   --color-text-tertiary:  #888888;
-  --color-text-info:      #1a6b9a;
+  --color-text-info:      var(--green-600);
+  --color-text-inverse:   #F8F7F3;
 
-  /* Background colors */
-  --color-background-primary:   #ffffff;
-  --color-background-secondary: #f7f7f5;
-  --color-background-tertiary:  #efefed;
-  --color-background-info:      #e8f4fb;
+  /* ── Backgrounds ─────────────────────────────────────────── */
+  --color-background-primary:   #FAFAF7;
+  --color-background-secondary: #F2F2EE;
+  --color-background-tertiary:  #E8E8E4;
+  --color-background-info:      var(--green-50);
+  --color-background-accent:    var(--gold-100);
 
-  /* Border colors */
-  --color-border-primary:   #c0c0bb;
-  --color-border-secondary: #d0d0cc;
-  --color-border-tertiary:  #e4e4e0;
+  /* ── Borders ─────────────────────────────────────────────── */
+  --color-border-primary:   #BCBCB4;
+  --color-border-secondary: #D0D0C8;
+  --color-border-tertiary:  #E2E2DC;
+  --color-border-accent:    var(--gold-500);
 
-  /* Border radii */
-  --border-radius-sm: 4px;
-  --border-radius-md: 6px;
-  --border-radius-lg: 10px;
+  /* ── Border radii ────────────────────────────────────────── */
+  --border-radius-sm:  4px;
+  --border-radius-md:  8px;
+  --border-radius-lg:  14px;
+  --border-radius-xl:  20px;
 
-  /* Sidebar */
-  --sidebar-width: 240px;
-  --sidebar-bg:    #f2f2ef;
+  /* ── Shadows ─────────────────────────────────────────────── */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,0.10), 0 3px 6px rgba(0,0,0,0.05);
 
-  /* Transitions */
-  --transition-fast: 0.15s ease;
-  --transition-med:  0.25s ease;
+  /* ── Sidebar ─────────────────────────────────────────────── */
+  --sidebar-width: 252px;
+  --sidebar-bg:    var(--green-800);
+
+  /* ── Transitions ─────────────────────────────────────────── */
+  --transition-fast: 0.14s ease;
+  --transition-med:  0.26s cubic-bezier(0.2, 0.85, 0.2, 1);
 }
 
-/* Optional dark theme — toggle by adding data-theme="dark" to <html> */
+/* ── Dark mode ───────────────────────────────────────────── */
 [data-theme="dark"] {
-  --color-text-primary:   #e8e8e4;
-  --color-text-secondary: #a8a8a0;
+  --color-text-primary:   #EAEAE6;
+  --color-text-secondary: #AAAAA0;
   --color-text-tertiary:  #666660;
-  --color-text-info:      #5ab3e0;
+  --color-text-info:      var(--green-400);
+  --color-text-inverse:   #F8F7F3;
 
-  --color-background-primary:   #1a1a1a;
-  --color-background-secondary: #242422;
-  --color-background-tertiary:  #2e2e2c;
-  --color-background-info:      #1a2e3a;
+  --color-background-primary:   #141412;
+  --color-background-secondary: #1C1C1A;
+  --color-background-tertiary:  #262624;
+  --color-background-info:      #0E2018;
+  --color-background-accent:    #231C0A;
 
-  --color-border-primary:   #444440;
-  --color-border-secondary: #3a3a38;
-  --color-border-tertiary:  #303030;
+  --color-border-primary:   #404040;
+  --color-border-secondary: #343430;
+  --color-border-tertiary:  #2A2A28;
 
-  --sidebar-bg: #202020;
+  --sidebar-bg: #0E1E18;
 }
