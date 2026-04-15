@@ -115,22 +115,13 @@ html, body {
   align-items: center; justify-content: center;
   width: 116px; min-height: 100px;
   border-radius: var(--radius-md); padding: 0.9rem 0.6rem 1.1rem;
-  cursor: pointer; text-align: center; position: relative; z-index: 2;
+  cursor: default; text-align: center; position: relative; z-index: 2;
   border: 1.5px solid;
   transition: transform var(--t), box-shadow var(--t), border-color var(--t);
 }
-/* Subtle click-hint dot at bottom */
-.node::after {
-  content: '';
-  position: absolute;
-  bottom: 6px; left: 50%; transform: translateX(-50%);
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--neutral-300);
-  transition: background var(--t), transform var(--t);
-}
-.node:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-.node:hover::after { background: var(--neutral-400); }
+/* Static mode: remove click affordances */
+.node::after { display: none; }
+.node:hover { transform: none; box-shadow: none; }
 .node.active {
   transform: translateY(-3px);
   box-shadow: var(--shadow-md);
@@ -181,7 +172,7 @@ html, body {
 .barrier {
   flex-shrink: 0; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  width: 68px; cursor: pointer; position: relative; z-index: 2;
+  width: 68px; cursor: default; position: relative; z-index: 2;
 }
 .barrier-track {
   width: 100%; display: flex; align-items: center; justify-content: center;
@@ -207,7 +198,7 @@ html, body {
 }
 .barrier-icon svg { width: 15px; height: 15px; stroke-width: 2; }
 
-.barrier:hover .barrier-icon { transform: scale(1.12); box-shadow: var(--shadow-sm); }
+.barrier:hover .barrier-icon { transform: none; box-shadow: none; }
 .barrier.active .barrier-icon { transform: scale(1.12); box-shadow: var(--shadow-md); }
 
 .barrier-label {
@@ -236,11 +227,11 @@ html, body {
   display: inline-flex; align-items: center; gap: 7px;
   padding: 5px 13px 5px 8px;
   border-radius: 20px; font-size: 12px; font-weight: 600;
-  cursor: pointer; border: 1.5px solid;
+  cursor: default; border: 1.5px solid;
   transition: transform var(--t), box-shadow var(--t), background var(--t);
   white-space: nowrap;
 }
-.chip:hover  { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.chip:hover  { transform: none; box-shadow: none; }
 .chip.active { transform: translateY(-2px); box-shadow: var(--shadow-md); }
 .chip-icon {
   width: 22px; height: 22px; border-radius: 6px;
@@ -342,7 +333,7 @@ html, body {
   <!-- Header -->
   <div class="viz-header">
     <h1 class="viz-title">Why Don't Attitudes Lead to Action?</h1>
-    <p class="viz-sub">Based on Kollmuss &amp; Agyeman (2002) — <em>Mind the Gap</em>. Select any node, barrier, or factor below to read the explanation.</p>
+    <p class="viz-sub">Based on Kollmuss &amp; Agyeman (2002) — <em>Mind the Gap</em>. A static diagram of the barriers between knowledge and action.</p>
   </div>
 
   <!-- Diagram -->
@@ -473,8 +464,8 @@ html, body {
   <div class="panel-wrap">
     <div class="info-panel c-green" id="info-panel">
       <div class="panel-head"><div class="panel-head-rule"></div><p class="panel-eyebrow">How to read this</p></div>
-      <p class="panel-title">Select any element to learn more</p>
-      <p class="panel-body">This diagram maps the full chain from <strong>Knowledge → Awareness → Attitude → Behavior</strong>, based on Kollmuss &amp; Agyeman (2002). Each circle between the nodes shows where the chain tends to break. The factor chips above and below show what makes each step easier or harder.</p>
+      <p class="panel-title">A quick guide to the model</p>
+      <p class="panel-body">This diagram maps the chain from <strong>Knowledge → Awareness → Attitude → Behavior</strong>, based on Kollmuss &amp; Agyeman (2002). Each circle between nodes highlights where the chain often breaks (a barrier). The factor chips above and below show external and internal forces that can widen or narrow those gaps.</p>
     </div>
   </div>
 
@@ -487,205 +478,6 @@ html, body {
 
 </div><!-- /wrap -->
 
-<script>
-const panel = document.getElementById('info-panel');
-let activeEl = null;
-
-const DATA = {
-  knowledge: {
-    c: 'c-blue', eyebrow: 'Flow Node 1 of 4',
-    title: 'Environmental Knowledge',
-    body: `Kollmuss & Agyeman distinguish two types of knowledge needed for behavior change:<br><br>
-      <strong>Factual knowledge</strong> — knowing <em>that</em> climate change is accelerating, that beef production emits disproportionate methane, that most plastic is never recycled.<br><br>
-      <strong>Action-related knowledge</strong> — knowing <em>what to do</em>: which products to avoid, how to reduce a carbon footprint, which collective actions actually matter.<br><br>
-      The paper stresses that factual knowledge alone rarely motivates action. Without personal relevance and emotional engagement, it remains inert information.`,
-    tags: ['Factual knowledge', 'Action-related knowledge', 'Environmental literacy', 'Information deficit model']
-  },
-  awareness: {
-    c: 'c-green', eyebrow: 'Flow Node 2 of 4',
-    title: 'Environmental Awareness',
-    body: `Awareness is more than knowing facts — it is the <strong>felt recognition</strong> that environmental problems are real, urgent, and personally relevant.<br><br>
-      The key mechanism is <strong>psychological proximity</strong>. Abstract global statistics about emissions rarely trigger awareness in the way that seeing a polluted local beach or experiencing a hurricane does.<br><br>
-      For students at USF, this proximity is real: Tampa Bay's sea-level projections, intensifying hurricane seasons, and coral bleaching in Florida waters all make environmental problems locally vivid — a natural advantage for building genuine awareness.`,
-    tags: ['Psychological proximity', 'Personal relevance', 'Emotional salience', 'Cognitive recognition']
-  },
-  attitude: {
-    c: 'c-amber', eyebrow: 'Flow Node 3 of 4',
-    title: 'Pro-Environmental Attitude',
-    body: `An attitude is a <strong>learned predisposition to respond</strong> favorably or unfavorably toward a behavior. A strong pro-environmental attitude means genuinely <em>wanting</em> to live and consume sustainably.<br><br>
-      Attitudes form through the interplay of values (biospheric, altruistic, egoistic), emotional connection to nature, and the social norms of one's peer group.<br><br>
-      Critically, Kollmuss & Agyeman demonstrate that <strong>strong attitudes do not reliably produce behavior</strong>. This is the paper's most important empirical claim — and the reason the next barrier is the largest.`,
-    tags: ['Values', 'Biospheric values', 'Altruism', 'Egoism', 'Learned predisposition']
-  },
-  behavior: {
-    c: 'c-green', eyebrow: 'Flow Node 4 of 4 — The Goal',
-    title: 'Pro-Environmental Behavior',
-    body: `This is the outcome the model is designed to explain and promote. It spans four domains:<br><br>
-      • <strong>Purchasing</strong> — sustainable products, reduced meat, second-hand goods<br>
-      • <strong>Transport</strong> — cycling, public transit, reduced flying<br>
-      • <strong>Disposal</strong> — recycling, composting, e-waste drop-off<br>
-      • <strong>Civic action</strong> — voting for environmental policy, community organizing, peer modeling<br><br>
-      Reaching this node requires overcoming barriers at <strong>every</strong> preceding stage — not just one.`,
-    tags: ['Purchasing behavior', 'Sustainable transport', 'Civic action', 'Lifestyle change']
-  },
-  barrier1: {
-    c: 'c-amber', eyebrow: 'Barrier 1',
-    title: 'The Relevance Gap: Knowledge → Awareness',
-    body: `Even people who know the facts may not develop <em>awareness</em> because the information doesn't feel personally relevant or emotionally alive.<br><br>
-      This gap is driven by <strong>psychological distance</strong> — climate change feels spatially and temporally remote. Statistics about global CO₂ concentrations don't trigger visceral concern the way that a flooded street or a dying coral reef does.<br><br>
-      <strong>Bridging strategy:</strong> Localize the problem. Linking abstract emissions data to concrete Tampa Bay sea-level projections is exactly this technique — making the global feel immediate and local.`,
-    tags: ['Psychological distance', 'Temporal distance', 'Spatial distance', 'Local framing']
-  },
-  barrier2: {
-    c: 'c-amber', eyebrow: 'Barrier 2',
-    title: 'The Value Conflict: Awareness → Attitude',
-    body: `People who are fully aware of environmental problems may still not develop a strong pro-environmental attitude because environmental values compete with other deeply held priorities.<br><br>
-      Typical value conflicts:<br>
-      • <strong>Freedom vs. restraint</strong> — car ownership as personal autonomy<br>
-      • <strong>Economic self-interest vs. collective good</strong> — cost of sustainable products<br>
-      • <strong>Cultural identity vs. sustainability</strong> — car culture, meat-eating as tradition<br><br>
-      This barrier is mediated by worldview, locus of control, and the dominant norms of one's social group. Shifting it requires addressing identity, not just information.`,
-    tags: ['Value conflict', 'Worldview', 'Competing priorities', 'Cultural identity', 'Economic trade-offs']
-  },
-  barrier3: {
-    c: 'c-orange', eyebrow: 'Barrier 3 — The Green Gap',
-    title: 'The Attitude–Behavior Gap',
-    body: `This is the central finding of the paper. People with <strong>strong pro-environmental attitudes</strong> routinely fail to act on them. The gap is caused by overlapping internal and external barriers:<br><br>
-      <strong>Internal blockers:</strong> Old habits (automaticity), present bias (preferring immediate comfort over future benefit), single-action bias (doing one good thing and stopping), perceived inefficacy ("my actions don't matter").<br><br>
-      <strong>External blockers:</strong> High cost of sustainable alternatives, missing infrastructure (no bike lanes, no composting facilities), social norms that make sustainable choices feel abnormal, and institutional lock-in.<br><br>
-      This is why behavior change campaigns targeting attitude alone consistently underperform — closing the gap requires <strong>systemic redesign</strong>, not just persuasion.`,
-    tags: ['Green gap', 'Present bias', 'Habit', 'Single-action bias', 'Infrastructure', 'Social norms', 'Perceived inefficacy']
-  },
-  institutional: {
-    c: 'c-blue', eyebrow: 'External Factor',
-    title: 'Institutional Factors',
-    body: `Government policies and institutional structures that enable or constrain sustainable behavior — independent of individual motivation.<br><br>
-      Examples: carbon pricing, extended producer responsibility laws, mandatory recycling programs, building codes requiring energy efficiency, and university sustainability mandates (like USF's carbon neutrality commitment).<br><br>
-      Institutional change is among the <strong>most powerful</strong> levers because it alters the default option for <em>everyone</em> — not just motivated individuals. When the default is sustainable, behavior changes at scale without requiring individual willpower.`,
-    tags: ['Policy', 'Carbon pricing', 'Extended producer responsibility', 'Default settings', 'USF Strategic Plan']
-  },
-  economic: {
-    c: 'c-blue', eyebrow: 'External Factor',
-    title: 'Economic Factors',
-    body: `The relative cost and financial incentives attached to different consumer choices.<br><br>
-      Sustainable products often carry a <strong>green premium</strong> — they cost more than conventional alternatives. This is a structural barrier that disadvantages lower-income households regardless of values or motivation.<br><br>
-      Effective economic interventions: subsidies for EVs and solar, tax credits for efficiency upgrades, carbon taxes that embed environmental cost in prices, and price parity for plant-based foods. Without price signals, sustainable choice remains a privilege.`,
-    tags: ['Green premium', 'Price signals', 'Carbon tax', 'Subsidies', 'Income inequality', 'Structural barrier']
-  },
-  social: {
-    c: 'c-blue', eyebrow: 'External Factor',
-    title: 'Social & Cultural Factors',
-    body: `Social norms — what people perceive as normal, expected, or admired in their community — are among the most powerful behavioral drivers in the model.<br><br>
-      Key mechanisms:<br>
-      • <strong>Descriptive norms:</strong> "Everyone drives to campus" makes cycling feel abnormal<br>
-      • <strong>Injunctive norms:</strong> Social approval or disapproval for visible choices<br>
-      • <strong>Identity norms:</strong> Car ownership, meat-eating as expressions of community belonging<br><br>
-      This is why peer-visible sustainable behavior by respected role models can shift norms quickly — and why USF student organizations have genuine behavioral influence.`,
-    tags: ['Descriptive norms', 'Injunctive norms', 'Social identity', 'Peer influence', 'Role models']
-  },
-  infrastructure: {
-    c: 'c-blue', eyebrow: 'External Factor',
-    title: 'Physical Infrastructure',
-    body: `The built environment either enables or forecloses sustainable choices entirely — no amount of motivation compensates for missing infrastructure.<br><br>
-      Enabling infrastructure:<br>
-      • Bike lanes and secure cycle parking<br>
-      • Reliable, frequent public transit<br>
-      • Accessible recycling and composting stations<br>
-      • EV charging points<br>
-      • Plant-based options at every campus dining outlet<br><br>
-      Tampa's car-dependent suburban layout is a textbook case: without safe cycling routes, choosing not to drive is genuinely difficult — not a failure of individual will.`,
-    tags: ['Built environment', 'Bike infrastructure', 'Public transit', 'Recycling access', 'Car dependency']
-  },
-  motivation: {
-    c: 'c-green', eyebrow: 'Internal Factor',
-    title: 'Motivation',
-    body: `The internal drive behind pro-environmental action. Kollmuss & Agyeman distinguish two types with very different durability:<br><br>
-      <strong>Intrinsic motivation:</strong> Acting sustainably because you genuinely care about nature, future generations, and ecological integrity — not for reward or approval. This produces <em>consistent, self-sustaining</em> behavior change.<br><br>
-      <strong>Extrinsic motivation:</strong> Acting sustainably for social approval, financial incentives, or to avoid disapproval. This is fragile — the behavior often disappears when the incentive is removed.<br><br>
-      Campaigns that appeal to identity ("I am someone who cares about the planet") tend to build more durable change than those that appeal to incentives alone.`,
-    tags: ['Intrinsic motivation', 'Extrinsic motivation', 'Identity-based change', 'Durable behavior']
-  },
-  values: {
-    c: 'c-green', eyebrow: 'Internal Factor',
-    title: 'Values',
-    body: `Deep, enduring beliefs that guide what a person considers important. The paper draws on <strong>Stern et al. (1999)</strong> value orientations:<br><br>
-      <strong>Biospheric values</strong> — intrinsic value placed on nature and all living things, independent of human benefit. The strongest predictor of pro-environmental behavior.<br><br>
-      <strong>Altruistic values</strong> — concern for other people, future generations, and global equity. Motivates collective and civic environmental action.<br><br>
-      <strong>Egoistic values</strong> — concern primarily for personal cost and benefit. Can motivate sustainability if framed as self-interest (energy savings, health benefits).`,
-    tags: ['Biospheric values', 'Altruistic values', 'Egoistic values', 'Stern et al. 1999', 'Value hierarchy']
-  },
-  emotion: {
-    c: 'c-green', eyebrow: 'Internal Factor',
-    title: 'Emotional Involvement',
-    body: `Emotional connection to the natural world is one of the strongest predictors of sustained pro-environmental behavior across all studies in the paper.<br><br>
-      Key forms:<br>
-      • <strong>Love of nature</strong> — felt attachment to specific places, species, or ecosystems (a childhood beach, a local forest)<br>
-      • <strong>Ecological grief</strong> — genuine distress at environmental loss, which often motivates action rather than paralysis<br>
-      • <strong>Eco-anxiety</strong> — concern about the future, which can motivate or immobilize depending on perceived efficacy<br><br>
-      Campaigns that engage emotions — not just facts — consistently outperform information-only approaches in producing behavior change.`,
-    tags: ['Love of nature', 'Nature connection', 'Ecological grief', 'Eco-anxiety', 'Emotional appeals']
-  },
-  locus: {
-    c: 'c-green', eyebrow: 'Internal Factor',
-    title: 'Locus of Control',
-    body: `The belief about whether <em>one's own actions</em> can produce meaningful outcomes in the world.<br><br>
-      <strong>Internal locus:</strong> "My choices make a real difference." Strongly predicts pro-environmental action across all contexts.<br><br>
-      <strong>External locus:</strong> "Nothing I do matters — corporations and governments are the only actors with real power." This belief — even when partly justified — functions as a powerful demotivating barrier.<br><br>
-      The common phrase "Why should I recycle when companies pollute millions of tons?" reflects an external locus. Effective campaigns must show that collective individual action has measurable, documented real-world impact.`,
-    tags: ['Internal locus', 'External locus', 'Perceived efficacy', 'Agency', 'Collective action']
-  },
-  habits: {
-    c: 'c-green', eyebrow: 'Internal Factor',
-    title: 'Old Habits & Behavior Patterns',
-    body: `Habits are the <strong>strongest internal contributor</strong> to the green gap. Once a behavior is established — driving to campus, buying single-use plastic, eating meat daily — it becomes <strong>automatic</strong>. The brain executes the routine without deliberate decision-making.<br><br>
-      This means even a person with strong environmental values may continue high-impact behaviors simply because they are on autopilot.<br><br>
-      <strong>Habit disruption windows:</strong> Moving to a new city, starting university, beginning a new job — these transitions break existing routines and create brief periods where new, sustainable behaviors can be established before old ones re-form. USF's first-year students are in exactly this window.`,
-    tags: ['Automaticity', 'Habit disruption', 'Transition points', 'Status quo bias', 'Green gap contributor']
-  }
-};
-
-const DEFAULT_PANEL = `
-  <div class="panel-head"><div class="panel-head-rule"></div><p class="panel-eyebrow">How to read this</p></div>
-  <p class="panel-title">Select any element to learn more</p>
-  <p class="panel-body">This diagram maps the full chain from <strong>Knowledge → Awareness → Attitude → Behavior</strong>, based on Kollmuss &amp; Agyeman (2002). Each circle between the nodes shows where the chain tends to break. The factor chips above and below show what makes each step easier or harder.</p>
-`;
-
-function renderPanel(key) {
-  const d = DATA[key];
-  if (!d) return;
-  panel.className = `info-panel ${d.c}`;
-  panel.style.opacity = '0';
-  panel.innerHTML = `
-    <div class="panel-head"><div class="panel-head-rule"></div><p class="panel-eyebrow">${d.eyebrow}</p></div>
-    <p class="panel-title">${d.title}</p>
-    <p class="panel-body">${d.body}</p>
-    ${d.tags ? `<div class="panel-tags">${d.tags.map(t=>`<span class="panel-tag">${t}</span>`).join('')}</div>` : ''}
-  `;
-  requestAnimationFrame(() => { panel.style.opacity = '1'; });
-  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-function clearActive() {
-  if (activeEl) { activeEl.classList.remove('active'); activeEl = null; }
-}
-
-document.querySelectorAll('[data-key]').forEach(el => {
-  el.addEventListener('click', e => {
-    e.stopPropagation();
-    const key = el.dataset.key;
-    if (activeEl === el) {
-      clearActive();
-      panel.className = 'info-panel c-green';
-      panel.innerHTML = DEFAULT_PANEL;
-      return;
-    }
-    clearActive();
-    el.classList.add('active');
-    activeEl = el;
-    renderPanel(key);
-  });
-});
-</script>
 <script>
 /* ── Auto-height: tell parent iframe how tall we are ── */
 function postHeight() {
