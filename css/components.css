@@ -27,6 +27,16 @@
   border-radius: var(--border-radius-md);
   margin-bottom: 1.5rem;
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes cover-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .paper-meta-bar {
+    animation: cover-in 700ms cubic-bezier(0.2, 0.85, 0.2, 1) both;
+  }
+}
 .paper-meta-main {
   display: flex;
   align-items: center;
@@ -434,9 +444,21 @@
   border-radius: var(--border-radius-md);
   padding: 0.5rem 1rem; cursor: pointer;
   text-decoration: none;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-med), border-color var(--transition-fast);
 }
-.section-nav-strip .nav-btn:hover { background: var(--color-background-info); }
+.section-nav-strip .nav-btn:hover { background: var(--color-background-info); transform: translateY(-2px); border-color: var(--color-border-primary); }
 .section-nav-strip .nav-btn:disabled,
 .section-nav-strip .nav-btn.hidden { visibility: hidden; }
 .section-nav-strip .nav-center { font-size: 12px; color: var(--color-text-tertiary); }
+
+@media (prefers-reduced-motion: reduce) {
+  .section-nav-strip .nav-btn:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-nav-strip .nav-btn:hover {
+    transform: none;
+  }
+}

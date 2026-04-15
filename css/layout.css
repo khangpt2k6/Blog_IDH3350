@@ -88,10 +88,10 @@ html, body {
   color: var(--color-text-secondary);
   text-decoration: none;
   border-radius: var(--border-radius-sm);
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-med);
   line-height: 1.4;
 }
-.toc-link:hover  { background: var(--color-background-tertiary); color: var(--color-text-primary); }
+.toc-link:hover  { background: var(--color-background-tertiary); color: var(--color-text-primary); transform: translateX(4px); }
 .toc-link.active { background: var(--color-background-info); color: var(--color-text-info); font-weight: 600; }
 .toc-num { font-weight: 600; margin-right: 6px; color: var(--color-text-tertiary); font-size: 11px; }
 .toc-link.active .toc-num { color: var(--color-text-info); }
@@ -109,9 +109,40 @@ html, body {
 
 /* ── Section container transitions ───────────────────────── */
 #section-container {
-  transition: opacity 0.18s ease;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.22s ease,
+    transform 0.32s cubic-bezier(0.2, 0.85, 0.2, 1);
+  will-change: opacity, transform;
 }
-#section-container.fading { opacity: 0; }
+#section-container.fading {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+
+/* ── Key block entrance animation (runs on section swap) ─── */
+@keyframes section-pop {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#section-container:not(.fading) .section-heading,
+#section-container:not(.fading) .abstract-box,
+#section-container:not(.fading) .intro-split,
+#section-container:not(.fading) .chart-figure,
+#section-container:not(.fading) .photo-figure,
+#section-container:not(.fading) .usf-box,
+#section-container:not(.fading) .quote-block,
+#section-container:not(.fading) .ref-section {
+  animation: section-pop 520ms cubic-bezier(0.2, 0.85, 0.2, 1) both;
+}
+
+/* Slightly emphasize the main heading */
+#section-container:not(.fading) .section-heading {
+  animation-duration: 620ms;
+}
 
 /* ── Cover area (title + abstract — always visible) ─────── */
 .cover-block { margin-bottom: 2rem; }
@@ -168,4 +199,22 @@ html, body {
   .app-shell { display: block; }
   .main-content { padding: 0; }
   #section-container { opacity: 1 !important; }
+}
+
+/* ── Reduced motion ───────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  #section-container {
+    transition: none;
+    transform: none;
+  }
+  #section-container.fading {
+    opacity: 1;
+  }
+  #section-container * {
+    animation: none !important;
+  }
+
+  .toc-link:hover {
+    transform: none;
+  }
 }
