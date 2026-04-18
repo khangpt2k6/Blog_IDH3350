@@ -49,3 +49,35 @@ document.addEventListener('click', (e) => {
     hamburgerBtn.setAttribute('aria-expanded', 'false');
   }
 });
+
+// ── Presentation clicker: left-click = next, right-click = prev ──────────
+const INTERACTIVE = new Set(['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'LABEL', 'IFRAME']);
+
+function isInteractive(el) {
+  while (el && el !== document.body) {
+    if (INTERACTIVE.has(el.tagName)) return true;
+    el = el.parentElement;
+  }
+  return false;
+}
+
+function presenterNavigate(direction) {
+  const SECTIONS = window._SECTIONS_LIST;
+  if (!SECTIONS) return;
+  const current = window.location.hash.replace('#', '') || 'abstract';
+  const idx = SECTIONS.findIndex(s => s.hash === current);
+  const next = SECTIONS[idx + direction];
+  if (next) window.location.hash = '#' + next.hash;
+}
+
+document.addEventListener('click', (e) => {
+  if (isInteractive(e.target)) return;
+  if (document.body.classList.contains('sidebar-open')) return;
+  presenterNavigate(1);
+});
+
+document.addEventListener('contextmenu', (e) => {
+  if (isInteractive(e.target)) return;
+  e.preventDefault();
+  presenterNavigate(-1);
+});

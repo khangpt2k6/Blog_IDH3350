@@ -21,6 +21,7 @@ const SECTIONS = [
 const container  = document.getElementById('section-container');
 const sectionNav = document.getElementById('section-nav');
 const cache      = {};   // fragment cache keyed by hash
+let prevIndex    = -1;
 
 function getHash() {
   const h = window.location.hash.replace('#', '');
@@ -63,19 +64,82 @@ function renderNavStrip(index) {
     </div>`;
 }
 
+function animateElements() {
+  const heading = container.querySelector('.section-heading');
+  if (heading) { heading.classList.add('el-left'); heading.style.animationDelay = '0ms'; }
+
+  container.querySelectorAll('.body-text').forEach((el, i) => {
+    el.classList.add('el-up');
+    el.style.animationDelay = `${60 + i * 45}ms`;
+  });
+
+  container.querySelectorAll('.quote-block').forEach((el, i) => {
+    el.classList.add('el-right');
+    el.style.animationDelay = `${120 + i * 60}ms`;
+  });
+
+  container.querySelectorAll('.sub-heading').forEach((el, i) => {
+    el.classList.add('el-left');
+    el.style.animationDelay = `${80 + i * 40}ms`;
+  });
+
+  container.querySelectorAll('figure, .chart-figure, .photo-figure').forEach((el, i) => {
+    el.classList.add('el-pop');
+    el.style.animationDelay = `${100 + i * 70}ms`;
+  });
+
+  // Grid / card children
+  const gridItems = container.querySelectorAll(
+    '[style*="display:grid"] > div, [style*="display: grid"] > div'
+  );
+  gridItems.forEach((el, i) => {
+    el.classList.add('el-pop');
+    el.style.animationDelay = `${80 + i * 55}ms`;
+  });
+}
+
 async function loadSection(hash) {
   const index = getSectionIndex(hash);
   if (index === -1) return loadSection('section-1');
 
   const section = SECTIONS[index];
 
-  // Fade out
-  container.classList.add('fading');
-  await new Promise(r => setTimeout(r, 180));
+  // Determine slide direction
+  const direction = prevIndex === -1 ? 0 : (index > prevIndex ? 1 : -1);
+  prevIndex = index;
+
+  // Exit animation
+  if (direction > 0) {
+    container.classList.add('exit-left');
+    await new Promise(r => setTimeout(r, 260));
+    container.classList.remove('exit-left');
+  } else if (direction < 0) {
+    container.classList.add('exit-right');
+    await new Promise(r => setTimeout(r, 260));
+    container.classList.remove('exit-right');
+  } else {
+    container.classList.add('fading');
+    await new Promise(r => setTimeout(r, 200));
+    container.classList.remove('fading');
+  }
 
   const html = await fetchFragment(section);
   container.innerHTML = html;
-  container.classList.remove('fading');
+
+  // Enter animation
+  if (direction > 0) {
+    container.classList.add('enter-right');
+    setTimeout(() => container.classList.remove('enter-right'), 420);
+  } else if (direction < 0) {
+    container.classList.add('enter-left');
+    setTimeout(() => container.classList.remove('enter-left'), 420);
+  } else {
+    container.classList.add('entering');
+    setTimeout(() => container.classList.remove('entering'), 350);
+  }
+
+  // Stagger element entrances
+  animateElements();
 
   // Update page title
   document.title = `${section.title} — Consumer Behavior & Sustainability | USF`;
@@ -85,7 +149,6 @@ async function loadSection(hash) {
 
   // Fire charts if this is the data section
   if (hash === 'section-6' && typeof window.chartsInit === 'function') {
-    // Small delay to ensure canvas elements are in the DOM
     setTimeout(() => window.chartsInit(), 50);
   }
 
@@ -97,6 +160,9 @@ async function loadSection(hash) {
   if (SECTIONS[index - 1]) fetchFragment(SECTIONS[index - 1]);
   if (SECTIONS[index + 1]) fetchFragment(SECTIONS[index + 1]);
 }
+
+// Expose sections list for nav.js presenter clicker
+window._SECTIONS_LIST = SECTIONS;
 
 // Initial load
 loadSection(getHash());
