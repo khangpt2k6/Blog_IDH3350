@@ -24,6 +24,7 @@ window.chartsInit = function () {
   Chart.defaults.font.family = fontSans;
   Chart.defaults.font.size   = 11;
   Chart.defaults.color       = textSec;
+  Chart.defaults.animation   = false;
 
   // Shared tick/grid style
   const axis = {
@@ -58,7 +59,7 @@ window.chartsInit = function () {
       },
       options: {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
           tooltip: {
@@ -92,7 +93,7 @@ window.chartsInit = function () {
       },
       options: {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         cutout: '58%',
         plugins: {
           legend: {
@@ -136,7 +137,7 @@ window.chartsInit = function () {
       options: {
         indexAxis: 'y',
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
           tooltip: {

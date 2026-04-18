@@ -13,6 +13,38 @@
 
   <!-- Chart.js (deferred — only needed for Section 6) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+
+  <style>
+    /* Always show hamburger on desktop for sidebar toggle */
+    @media (min-width: 769px) {
+      .hamburger-btn { display: flex !important; }
+    }
+
+    /* Desktop sidebar collapse */
+    body.sidebar-collapsed .sidebar { display: none !important; }
+    body.sidebar-collapsed .app-shell {
+      grid-template-columns: 1fr !important;
+      grid-template-areas: "topbar" "main" !important;
+    }
+    body.sidebar-collapsed .content-inner {
+      max-width: 1100px !important;
+    }
+
+    /* Present Mode: hide sidebar + body text */
+    body.present-mode .sidebar { display: none !important; }
+    body.present-mode .app-shell {
+      grid-template-columns: 1fr !important;
+      grid-template-areas: "topbar" "main" !important;
+    }
+    body.present-mode .content-inner {
+      max-width: 1100px !important;
+    }
+    body.present-mode .body-text { display: none !important; }
+    body.present-mode .intro-split-text .body-text { display: none !important; }
+    body.present-mode .usf-box .body-text { display: none !important; }
+    body.present-mode .section-heading { margin-bottom: 0.5rem !important; }
+    body.present-mode .sub-heading { margin-top: 1rem !important; margin-bottom: 0.25rem !important; }
+  </style>
 </head>
 <body>
 
@@ -57,6 +89,7 @@
     </div>
     <span class="journal-name-bar">IDH 3350 Research Blog &nbsp;·&nbsp; Environmental Studies</span>
     <span class="topbar-date">April 2026</span>
+    <button id="present-btn" onclick="document.body.classList.toggle('present-mode');this.textContent=document.body.classList.contains('present-mode')?'Exit Present':'Present'" style="padding:5px 13px;font-size:11px;font-weight:600;background:var(--green-600);color:#fff;border:none;border-radius:20px;cursor:pointer;white-space:nowrap;letter-spacing:0.02em;flex-shrink:0;">Present</button>
   </header>
 
   <!-- ── Main content ─────────────────────────────────────── -->
@@ -65,22 +98,27 @@
 
       <!-- Cover: always visible -->
       <div class="cover-block">
-        <div class="paper-meta-bar">
-          <div class="paper-meta-main">
-            <span class="paper-meta-author">Tuan Khang Phan</span>
-            <span class="paper-meta-dot">·</span>
-            <span class="paper-meta-info">University of South Florida</span>
-            <span class="paper-meta-dot">·</span>
-            <span class="paper-meta-info">IDH 3350: Natural Science</span>
-            <span class="paper-meta-dot">·</span>
-            <span class="paper-meta-info">Prof. Andrew Hargrove</span>
-            <span class="paper-meta-dot">·</span>
-            <span class="paper-meta-info">April 2026</span>
+        <div class="paper-meta-bar" style="flex-wrap:nowrap;">
+          <div id="meta-inner" style="display:flex;align-items:center;gap:0.55rem;flex:1;min-width:0;overflow:hidden;flex-wrap:nowrap;">
+            <div class="paper-meta-main">
+              <span class="paper-meta-author">Tuan Khang Phan</span>
+              <span class="paper-meta-dot">·</span>
+              <span class="paper-meta-info">University of South Florida</span>
+              <span class="paper-meta-dot">·</span>
+              <span class="paper-meta-info">IDH 3350: Natural Science</span>
+              <span class="paper-meta-dot">·</span>
+              <span class="paper-meta-info">Prof. Andrew Hargrove</span>
+              <span class="paper-meta-dot">·</span>
+              <span class="paper-meta-info">April 2026</span>
+            </div>
+            <a class="paper-pdf-btn" href="Tuan_Phan_GEA2_Blog_Raw_Document.pdf" target="_blank" rel="noopener" aria-label="Read full paper PDF">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+              Read paper
+            </a>
           </div>
-          <a class="paper-pdf-btn" href="Tuan_Phan_GEA2_Blog_Raw_Document.pdf" target="_blank" rel="noopener" aria-label="Read full paper PDF">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-            Read paper
-          </a>
+          <button id="meta-toggle" onclick="(function(btn){var bar=document.getElementById('meta-inner');var collapsed=bar.style.display==='none';bar.style.display=collapsed?'':'none';btn.style.transform=collapsed?'rotate(0deg)':'rotate(180deg)'})(this)" aria-label="Toggle meta bar" style="flex-shrink:0;width:22px;height:22px;border:1px solid var(--color-border-secondary);background:none;border-radius:50%;cursor:pointer;color:var(--color-text-tertiary);display:flex;align-items:center;justify-content:center;padding:0;transition:transform 0.2s ease;">
+            <svg width="10" height="10" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,1 5,5 9,1"/></svg>
+          </button>
         </div>
       </div>
       <!-- /Cover -->

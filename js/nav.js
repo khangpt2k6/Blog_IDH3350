@@ -20,10 +20,14 @@ updateActiveLink();
 // Update on hash change
 window.addEventListener('hashchange', () => updateActiveLink());
 
-// Mobile: hamburger open/close
+// Hamburger: collapse on desktop, slide-open on mobile
 hamburgerBtn.addEventListener('click', () => {
-  const isOpen = document.body.classList.toggle('sidebar-open');
-  hamburgerBtn.setAttribute('aria-expanded', String(isOpen));
+  if (window.innerWidth > 768) {
+    document.body.classList.toggle('sidebar-collapsed');
+  } else {
+    const isOpen = document.body.classList.toggle('sidebar-open');
+    hamburgerBtn.setAttribute('aria-expanded', String(isOpen));
+  }
 });
 
 // Mobile: close sidebar when a nav link is clicked
