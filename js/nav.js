@@ -70,14 +70,69 @@ function presenterNavigate(direction) {
   if (next) window.location.hash = '#' + next.hash;
 }
 
+let mouseNavEnabled = true;
+
 document.addEventListener('click', (e) => {
+  if (!mouseNavEnabled) return;
   if (isInteractive(e.target)) return;
   if (document.body.classList.contains('sidebar-open')) return;
+  if (e.target.closest('#settings-menu, #settings-btn')) return;
   presenterNavigate(1);
 });
 
 document.addEventListener('contextmenu', (e) => {
+  if (!mouseNavEnabled) return;
   if (isInteractive(e.target)) return;
+  if (e.target.closest('#settings-menu, #settings-btn')) return;
   e.preventDefault();
   presenterNavigate(-1);
 });
+
+// ── Settings dropdown ─────────────────────────────────────────────────────
+const settingsBtn   = document.getElementById('settings-btn');
+const settingsMenu  = document.getElementById('settings-menu');
+const optHideSidebar  = document.getElementById('opt-hide-sidebar');
+const optPresentMode  = document.getElementById('opt-present-mode');
+const optHideMeta     = document.getElementById('opt-hide-meta');
+const optMouseControl = document.getElementById('opt-mouse-control');
+
+function openSettings(open) {
+  settingsMenu.hidden = !open;
+  settingsBtn.setAttribute('aria-expanded', String(open));
+}
+
+settingsBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  openSettings(settingsMenu.hidden);
+});
+
+document.addEventListener('click', (e) => {
+  if (settingsMenu.hidden) return;
+  if (e.target.closest('#settings-menu, #settings-btn')) return;
+  openSettings(false);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !settingsMenu.hidden) openSettings(false);
+});
+
+optHideSidebar.addEventListener('change', () => {
+  document.body.classList.toggle('sidebar-collapsed', optHideSidebar.checked);
+});
+
+optPresentMode.addEventListener('change', () => {
+  document.body.classList.toggle('present-mode', optPresentMode.checked);
+});
+
+optHideMeta.addEventListener('change', () => {
+  document.body.classList.toggle('hide-meta-bar', optHideMeta.checked);
+});
+
+optMouseControl.addEventListener('change', () => {
+  mouseNavEnabled = optMouseControl.checked;
+});
+
+// Sync initial state from body classes
+optHideSidebar.checked = document.body.classList.contains('sidebar-collapsed');
+optPresentMode.checked = document.body.classList.contains('present-mode');
+optHideMeta.checked    = document.body.classList.contains('hide-meta-bar');

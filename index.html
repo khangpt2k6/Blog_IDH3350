@@ -44,6 +44,62 @@
     body.present-mode .usf-box .body-text { display: none !important; }
     body.present-mode .section-heading { margin-bottom: 0.5rem !important; }
     body.present-mode .sub-heading { margin-top: 1rem !important; margin-bottom: 0.25rem !important; }
+
+    /* Hide meta bar option */
+    body.hide-meta-bar .paper-meta-bar { display: none !important; }
+
+    /* Settings dropdown */
+    .settings-wrap { position: relative; flex-shrink: 0; }
+    .settings-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; padding: 0;
+      background: transparent; border: 1px solid var(--color-border-secondary);
+      border-radius: 50%; cursor: pointer; color: var(--color-text-secondary);
+      transition: background 0.15s ease, color 0.15s ease, transform 0.2s ease;
+    }
+    .settings-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+    .settings-btn[aria-expanded="true"] { transform: rotate(45deg); color: var(--green-500); border-color: var(--green-500); }
+    .settings-menu {
+      position: fixed; top: 54px; right: 1.75rem;
+      min-width: 240px;
+      background: var(--color-background-primary);
+      border: 1px solid var(--color-border-secondary);
+      border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+      padding: 6px;
+      z-index: 2000;
+    }
+    @media (max-width: 900px) {
+      .settings-menu { right: 1.1rem; }
+    }
+    .settings-menu[hidden] { display: none; }
+    .settings-menu-title {
+      font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--color-text-tertiary); font-weight: 600;
+      padding: 8px 12px 6px;
+    }
+    .settings-item {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 9px 12px; border-radius: 8px; cursor: pointer;
+      font-size: 13px; color: var(--color-text-primary); user-select: none;
+    }
+    .settings-item:hover { background: var(--color-background-secondary); }
+    .settings-item-label { display: flex; flex-direction: column; gap: 2px; }
+    .settings-item-desc { font-size: 11px; color: var(--color-text-tertiary); }
+    .settings-toggle {
+      position: relative; width: 32px; height: 18px; flex-shrink: 0;
+      background: var(--color-background-tertiary);
+      border-radius: 9px; transition: background 0.2s ease;
+    }
+    .settings-toggle::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+    }
+    .settings-item input { position: absolute; opacity: 0; pointer-events: none; }
+    .settings-item input:checked ~ .settings-toggle { background: var(--green-500); }
+    .settings-item input:checked ~ .settings-toggle::after { transform: translateX(14px); }
   </style>
 </head>
 <body>
@@ -89,7 +145,50 @@
     </div>
     <span class="journal-name-bar">IDH 3350 Research Blog &nbsp;·&nbsp; Environmental Studies</span>
     <span class="topbar-date">April 2026</span>
-    <button id="present-btn" onclick="document.body.classList.toggle('present-mode');this.textContent=document.body.classList.contains('present-mode')?'Exit Present':'Present'" style="padding:5px 13px;font-size:11px;font-weight:600;background:var(--green-600);color:#fff;border:none;border-radius:20px;cursor:pointer;white-space:nowrap;letter-spacing:0.02em;flex-shrink:0;">Present</button>
+    <div class="settings-wrap">
+      <button id="settings-btn" class="settings-btn" aria-label="Display settings" aria-expanded="false" aria-controls="settings-menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+      <div id="settings-menu" class="settings-menu" role="menu" aria-labelledby="settings-btn" hidden>
+        <p class="settings-menu-title">Display</p>
+        <label class="settings-item">
+          <span class="settings-item-label">
+            <span>Hide sidebar</span>
+            <span class="settings-item-desc">More room for content</span>
+          </span>
+          <input type="checkbox" id="opt-hide-sidebar">
+          <span class="settings-toggle" aria-hidden="true"></span>
+        </label>
+        <label class="settings-item">
+          <span class="settings-item-label">
+            <span>Present mode</span>
+            <span class="settings-item-desc">Show headings &amp; visuals only</span>
+          </span>
+          <input type="checkbox" id="opt-present-mode">
+          <span class="settings-toggle" aria-hidden="true"></span>
+        </label>
+        <label class="settings-item">
+          <span class="settings-item-label">
+            <span>Hide meta bar</span>
+            <span class="settings-item-desc">Hide author, course &amp; PDF bar</span>
+          </span>
+          <input type="checkbox" id="opt-hide-meta">
+          <span class="settings-toggle" aria-hidden="true"></span>
+        </label>
+        <p class="settings-menu-title">Navigation</p>
+        <label class="settings-item">
+          <span class="settings-item-label">
+            <span>Click to navigate</span>
+            <span class="settings-item-desc">Left-click next · right-click back</span>
+          </span>
+          <input type="checkbox" id="opt-mouse-control" checked>
+          <span class="settings-toggle" aria-hidden="true"></span>
+        </label>
+      </div>
+    </div>
   </header>
 
   <!-- ── Main content ─────────────────────────────────────── -->
@@ -108,8 +207,6 @@
               <span class="paper-meta-info">IDH 3350: Natural Science</span>
               <span class="paper-meta-dot">·</span>
               <span class="paper-meta-info">Prof. Andrew Hargrove</span>
-              <span class="paper-meta-dot">·</span>
-              <span class="paper-meta-info">April 2026</span>
             </div>
             <a class="paper-pdf-btn" href="Tuan_Phan_GEA2_Blog_Raw_Document.pdf" target="_blank" rel="noopener" aria-label="Read full paper PDF">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
